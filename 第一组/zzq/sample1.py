@@ -4,7 +4,7 @@ print('Train shape: ', Train.shape)
 print('Test shape: ', Test.shape)
 Combine = pd.concat([Train, Test])  # 将测试集和训练集合并
 print('Combine shape: ', Combine.shape)
-print(Combine.isna().sum()) # 统计每一行缺失值
+print(Combine.isna().sum()) # 统计每一行缺失值nan
 Combine = Combine.fillna(Combine.mode().iloc[0, :])  # 用每一列出现最多的数据填充。
 
 # 匿名特征处理：D_11。拆分为length、width和high
@@ -17,6 +17,7 @@ Combine['length'] = Combine['length'].astype(float)
 Combine['width'] = Combine['width'].astype(float)
 Combine['high'] = Combine['high'].astype(float)
 
+Combine.nunique()
 
 def One_Hot(OneHotCol):
     new_cols = []
@@ -48,8 +49,8 @@ def date_proc(x):
 def date_transform(df, fea_col):
     for f in tqdm(fea_col):
         df[f] = pd.to_datetime(df[f].astype('str').apply(date_proc))
-        df[f + '_year'] = df[f].dt.year
-        df[f + '_month'] = df[f].dt.month
+        df[f + '_year'] = df[f].dt.yntear
+        df[f + '_month'] = df[f].dt.moh
         df[f + '_day'] = df[f].dt.day
         df[f + '_dayofweek'] = df[f].dt.dayofweek
     return (df)
@@ -169,7 +170,7 @@ for f in tqdm(['serial', 'brand', 'registerDate_year', 'tradeTime_year', 'mileag
             TestX['{}_target_{}'.format(f, stat)] = TestX['{}_target_{}'.format(f, stat)].fillna(StatDefaultDict[stat])
             XTrain.loc[ValIndex, '{}_target_{}'.format(f, stat)] = ValX['{}_target_{}'.format(f, stat)].values
             XTest['{}_target_{}'.format(f, stat)] += TestX['{}_target_{}'.format(f, stat)].values / KF.n_splits
-
+# k折结束
 
 # 归一化（极差法）
 Scaler = MinMaxScaler()
